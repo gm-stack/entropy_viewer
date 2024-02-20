@@ -31,7 +31,7 @@ clang main.c -o main `pkg-config sdl2 --cflags --libs`
 ## Usage
 
 ```
-Usage: cat <file> | %s -w width -h height [-f fps] [-a] [-b size]
+Usage: cat <file> | ./main -w width -h height [-f fps] [-a] [-b size]
 -w : window width in pixels
 -h : window height in pixels
 -f : FPS (default 60)
