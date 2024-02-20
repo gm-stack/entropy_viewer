@@ -4,7 +4,7 @@ Displays entropy read from stdin for a block of data represented one pixel at a 
 
 By default, every 4096 bytes is one pixel.
 
-Kind-of like [playfile](https://github.com/gm-stack/playfile) (which I wrote 14 years ago) - but looking at a 4K block at a time, not one pixel at a time.
+Kind-of like [playfile](https://github.com/gm-stack/playfile) (which I wrote 14 years ago) - but looking at a block at a time, not one pixel at a time - effectively "zoomed out".
 
 Each pixel's colour is:
 
