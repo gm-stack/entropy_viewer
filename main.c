@@ -2,9 +2,9 @@
 #include <fcntl.h>
 #include "SDL.h"
 
-int width = 1920;
-int height = 1080;
-int waterfall = 1;
+int width = 0;
+int height = 0;
+int waterfall = 0;
 
 SDL_TimerID timer1;
 SDL_Window* window;
@@ -22,6 +22,35 @@ int main(int argc, char* argv[]) {
     int fps = 60;
     int delay = 1000/fps;
     int done = 0;
+
+    int c;
+	while ((c = getopt(argc, argv, "aw:h:f:")) != -1) {
+		switch (c) {
+			case 'w':
+				width = atoi(optarg);
+				break;
+			case 'h':
+				height = atoi(optarg);
+				break;
+			case 'f':
+				fps = atoi(optarg);
+				delay = 1000/fps;
+				break;
+			case 'a':
+				waterfall = 1;
+				break;
+		}
+	}
+
+    if (width == 0 || height == 0) {
+		printf("Usage: cat <file> | %s -w width -h height [-f fps] [-a] file\n"
+			   "-w : window width in pixels\n"
+			   "-h : window height in pixels\n"
+			   "-f : FPS (default 60)\n"
+			   "-a : draw in waterfall mode\n"
+			   , argv[0]);
+		exit(1);
+	}
 
     // setup SDL
     if ( SDL_Init(SDL_INIT_EVERYTHING) < 0 ) {

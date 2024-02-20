@@ -12,6 +12,8 @@ Each pixel's colour is:
 
 Written to see if a hard drive being recovered was still returning all zeros.
 
+Supports drawing in normal mode (draw from left to right, top to bottom, then start again at top left), and waterfall mode (draw a line, then shift screen down).
+
 ## Screenshot
 
 ![screenshot showing static like pattern at top of image](screenshot.jpg)
@@ -27,15 +29,13 @@ clang main.c -o main `pkg-config sdl2 --cflags --libs`
 ## Usage
 
 ```bash
-cat somefile.img | ./main
+cat somefile.img | ./main -w 1920 -h 1080
 ```
 
 ```bash
-tail -f somefile.img | ./main
+tail -f somefile.img | ./main -w 640 -h 480 -a
 ```
 
 ## Todo
 
-- Speed can probably be improved by writing to a texture directly rather than using `SDL_SetRenderDrawColor()`.
-- Program could take arguments for width/height/fps/file to open
 - Colour scheme could be configurable
