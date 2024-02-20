@@ -13,7 +13,8 @@ SDL_Texture* screen_texture;
 Uint32 *pixels;
 
 unsigned int inbuf_len = 0;
-unsigned char inbuf[4096];
+unsigned int inbuf_size = 4096;
+unsigned char *inbuf;
 
 static Uint32 event_push(Uint32 interval, void* param);
 void frame_render();
@@ -24,7 +25,7 @@ int main(int argc, char* argv[]) {
     int done = 0;
 
     int c;
-	while ((c = getopt(argc, argv, "aw:h:f:")) != -1) {
+	while ((c = getopt(argc, argv, "aw:h:f:b:")) != -1) {
 		switch (c) {
 			case 'w':
 				width = atoi(optarg);
@@ -36,6 +37,9 @@ int main(int argc, char* argv[]) {
 				fps = atoi(optarg);
 				delay = 1000/fps;
 				break;
+            case 'b':
+                inbuf_size = strtoul(optarg, NULL, 0);
+                break;
 			case 'a':
 				waterfall = 1;
 				break;
@@ -43,14 +47,22 @@ int main(int argc, char* argv[]) {
 	}
 
     if (width == 0 || height == 0) {
-		printf("Usage: cat <file> | %s -w width -h height [-f fps] [-a] file\n"
+		printf("Usage: cat <file> | %s -w width -h height [-f fps] [-a] [-b size]\n"
 			   "-w : window width in pixels\n"
 			   "-h : window height in pixels\n"
 			   "-f : FPS (default 60)\n"
 			   "-a : draw in waterfall mode\n"
+               "-b : buffer size per pixel (default 4096)"
 			   , argv[0]);
 		exit(1);
 	}
+
+    if (inbuf_size <= 0) {
+        printf("invalid inbuf_size %i - must be >0\n", inbuf_size);
+        exit(1);
+    }
+
+    inbuf = malloc(inbuf_size);
 
     // setup SDL
     if ( SDL_Init(SDL_INIT_EVERYTHING) < 0 ) {
@@ -126,16 +138,16 @@ int ypos = 0;
 // average of all
 unsigned char r() {
     int res = 0;
-    for (int i=0; i<4096; i++) {
+    for (int i=0; i<inbuf_size; i++) {
         res = res + (int) inbuf[i];
     }
-    return (unsigned char)(res / 4096);
+    return (unsigned char)(res / inbuf_size);
 }
 
 // xor of all
 unsigned char g() {
     unsigned char res = 0;
-    for (int i=0; i<4096; i++) {
+    for (int i=0; i<inbuf_size; i++) {
         res = res ^ inbuf[i];
     }
     return res;
@@ -144,23 +156,23 @@ unsigned char g() {
 // proportion of values > 0 in all
 unsigned char b() {
     int res = 0;
-    for (int i=0; i<4096; i++) {
+    for (int i=0; i<inbuf_size; i++) {
         if (inbuf[i] > 0) res++;
     }
-    return (unsigned char) (res / (4096/256));
+    return (unsigned char) ((float)res / ((float)inbuf_size/(float)256));
 }
 
 void frame_render() {
     int num_pixels = 0; // number of pixels drawn
     while (1) {
         // attempt to read some characters, up to what's left in the buffer
-        int char_read = read(0, inbuf + inbuf_len, 4096 - inbuf_len);
+        int char_read = read(0, inbuf + inbuf_len, inbuf_size - inbuf_len);
         if (char_read < 0) {
             break; // nothing more to read, just draw what we have and check again later
         }
         inbuf_len += char_read;
 
-        if (inbuf_len >= 4096) { // we have a full buffer, draw a pixel
+        if (inbuf_len >= inbuf_size) { // we have a full buffer, draw a pixel
             inbuf_len = 0; // reset to start of buffer
 
             // calculate colours
