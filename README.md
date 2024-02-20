@@ -31,12 +31,12 @@ clang main.c -o main `pkg-config sdl2 --cflags --libs`
 ## Usage
 
 ```
-Usage: cat <file> | %s -w width -h height [-f fps] [-a] [-b size]\n"
-			   "-w : window width in pixels\n"
-			   "-h : window height in pixels\n"
-			   "-f : FPS (default 60)\n"
-			   "-a : draw in waterfall mode\n"
-               "-b : buffer size per pixel (default 4096)"
+Usage: cat <file> | %s -w width -h height [-f fps] [-a] [-b size]
+-w : window width in pixels
+-h : window height in pixels
+-f : FPS (default 60)
+-a : draw in waterfall mode
+-b : buffer size per pixel (default 4096)
 ```
 
 ```bash
