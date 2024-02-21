@@ -167,7 +167,7 @@ void frame_render() {
     while (1) {
         // attempt to read some characters, up to what's left in the buffer
         int char_read = read(0, inbuf + inbuf_len, inbuf_size - inbuf_len);
-        if (char_read < 0) {
+        if (char_read <= 0) {
             break; // nothing more to read, just draw what we have and check again later
         }
         inbuf_len += char_read;
