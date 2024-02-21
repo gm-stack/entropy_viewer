@@ -164,6 +164,7 @@ unsigned char b() {
 
 void frame_render() {
     int num_pixels = 0; // number of pixels drawn
+    
     while (1) {
         // attempt to read some characters, up to what's left in the buffer
         int char_read = read(0, inbuf + inbuf_len, inbuf_size - inbuf_len);
@@ -206,6 +207,9 @@ void frame_render() {
                                        // (otherwise we can sit here forever reading if data 
                                        // is coming in quicker than we can draw)
     }
+
+    if (num_pixels == 0) return; // if no pixels were updated, just return
+    
     // clear screen, update texture, paint texture to screen buffer, draw screen buffer
     SDL_RenderClear(renderer);
     SDL_UpdateTexture(screen_texture, NULL, pixels, width*4);
