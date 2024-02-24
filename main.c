@@ -151,12 +151,12 @@ int main(int argc, char* argv[]) {
                     SDL_Quit();
                     return 0;
                 case SDL_USEREVENT:
-                    if (eof == 1) break; 
+                    if (eof == 1) break;
                     timer1 = SDL_AddTimer(delay, event_push, NULL);
                     frame_render();
                     break;
                 case SDL_WINDOWEVENT:
-                    if (event.window.event == SDL_WINDOWEVENT_RESIZED) {                        
+                    if (event.window.event == SDL_WINDOWEVENT_RESIZED) {
                         // calculate old pixel array size, set new width and height, calculate new size
                         unsigned int old_len = pixel_width * pixel_height * 4;
                         width = event.window.data1;
@@ -164,22 +164,22 @@ int main(int argc, char* argv[]) {
                         pixel_width = width / scale;
                         pixel_height = height / scale;
                         unsigned int new_len = pixel_width * pixel_height * 4;
-                        
+
                         // allocate new pixels array, clear to grey and copy old pixels into it
                         Uint32 *new_pixels = malloc(new_len);
                         memset(new_pixels, 0x7F, new_len);
                         memcpy(new_pixels, pixels, (new_len < old_len) ? new_len : old_len);
                         free(pixels);
                         pixels = new_pixels;
-                        
+
                         // create new screen texture
                         SDL_DestroyTexture(screen_texture);
                         screen_texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, pixel_width, pixel_height);
 
                         // update new screen texture with new pixels, render
                         repaint();
-                        
-                        // ensure next pixel isn't 
+
+                        // ensure next pixel isn't
                         if (xpos >= pixel_width) xpos = pixel_width;
                         if (ypos >= pixel_height) ypos = 0;
                     }
@@ -189,7 +189,7 @@ int main(int argc, char* argv[]) {
             }
         }
     }
-    
+
     /* Clean up the SDL library */
     SDL_Quit();
     return(0);
@@ -215,7 +215,7 @@ unsigned char g() {
 }
 
 // proportion of values > 0 in all
-// fixme: set limit for 
+// fixme: set limit for
 unsigned char b() {
     unsigned int res = 0;
     for (int i=0; i<inbuf_size; i++) {
@@ -234,7 +234,7 @@ void repaint() {
 
 void frame_render() {
     int num_pixels = 0; // number of pixels drawn
-    
+
     while (1) {
         // attempt to read some characters, up to what's left in the buffer
         int char_read = read(0, inbuf + inbuf_len, inbuf_size - inbuf_len);
@@ -247,7 +247,7 @@ void frame_render() {
         if (char_read < 0) { // if an error condition occurred
             if (errno == EAGAIN) { // not a real error - just no more data to read
                 break; // nothing more to read, just draw what we have and check again later
-            } else {            
+            } else {
                 done = 1; // other error condition = exit with error printed
                 printf("read error %s, exiting\n", strerror(errno));
                 return;
@@ -266,7 +266,7 @@ void frame_render() {
             // tweak pixel in pixels array
             pixels[xpos + (ypos * pixel_width)] = 0xFF000000 | (red << 16) | (green << 8) | blue;
             num_pixels++; // count pixels we've drawn
-            
+
             // increment X position
             xpos++;
             if (waterfall) {
@@ -288,7 +288,7 @@ void frame_render() {
         }
         if (num_pixels > pixel_width) break; // if we've drawn enough for a whole line, break and draw it already
                                              // then go handle other events.
-                                             // (otherwise we can sit here forever reading if data 
+                                             // (otherwise we can sit here forever reading if data
                                              // is coming in quicker than we can draw)
     }
 
