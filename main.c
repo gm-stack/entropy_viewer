@@ -36,47 +36,47 @@ int main(int argc, char* argv[]) {
     int delay = 1000/fps;
 
     int c;
-	while ((c = getopt(argc, argv, "axw:h:f:b:s:")) != -1) {
-		switch (c) {
-			case 'w':
-				width = atoi(optarg);
-				break;
-			case 'h':
-				height = atoi(optarg);
-				break;
-			case 'f':
-				fps = atoi(optarg);
-				delay = 1000/fps;
-				break;
+    while ((c = getopt(argc, argv, "axw:h:f:b:s:")) != -1) {
+        switch (c) {
+            case 'w':
+                width = atoi(optarg);
+                break;
+            case 'h':
+                height = atoi(optarg);
+                break;
+            case 'f':
+                fps = atoi(optarg);
+                delay = 1000/fps;
+                break;
             case 'b':
                 inbuf_size = strtoul(optarg, NULL, 0);
                 break;
-			case 'a':
-				waterfall = 1;
-				break;
+            case 'a':
+                waterfall = 1;
+                break;
             case 'x':
                 exit_eof = 1;
                 break;
             case 's':
                 scale = strtoul(optarg, NULL, 0);
                 break;
-		}
-	}
+        }
+    }
 
     if (width == 0 || height == 0) {
-		printf("Usage: cat <file> | %s -w width -h height [-f fps] [-a] [-b size] [-x] [-s scale]\n"
-			   "-w : window width in pixels\n"
-			   "-h : window height in pixels\n"
-			   "-f : FPS (default 60)\n"
-			   "-a : draw in waterfall mode - draw a full line then shift down\n"
+        printf("Usage: cat <file> | %s -w width -h height [-f fps] [-a] [-b size] [-x] [-s scale]\n"
+               "-w : window width in pixels\n"
+               "-h : window height in pixels\n"
+               "-f : FPS (default 60)\n"
+               "-a : draw in waterfall mode - draw a full line then shift down\n"
                "     (default: draw \"CRT style\" - left to right, top to bottom,\n"
                "     then start again at top left)\n"
                "-b : buffer size per block in bytes (default 4096)\n"
                "-x : exit when EOF reached\n"
                "-s : scaling factor: each block is n pixels\n"
-			   , argv[0]);
-		exit(1);
-	}
+               , argv[0]);
+        exit(1);
+    }
 
     if (inbuf_size == 0) {
         printf("invalid inbuf_size %i - must be >0\n", inbuf_size);
@@ -95,10 +95,10 @@ int main(int argc, char* argv[]) {
 
     // setup SDL
     if ( SDL_Init(SDL_INIT_EVERYTHING) < 0 ) {
-		fprintf(stderr, "Couldn't initialize SDL: %s\n",
-			SDL_GetError());
-		exit(1);
-	}
+        fprintf(stderr, "Couldn't initialize SDL: %s\n",
+            SDL_GetError());
+        exit(1);
+    }
 
     window = SDL_CreateWindow("entropy_viewer", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, width, height, SDL_WINDOW_RESIZABLE);
     if (window == NULL) {
@@ -136,25 +136,25 @@ int main(int argc, char* argv[]) {
 
     // event loop
     done = 0;
-	while ( !done ) {
+    while ( !done ) {
         SDL_Event event;
-		while ( SDL_PollEvent(&event) ) {
-			switch (event.type) {
-				case SDL_MOUSEMOTION:
-					break;
-				case SDL_MOUSEBUTTONDOWN:
-					break;
-				case SDL_KEYDOWN:
-					break;
-				case SDL_QUIT:
-					printf("Exiting\n");
-					SDL_Quit();
-					return 0;
-				case SDL_USEREVENT:
-					if (eof == 1) break; 
+        while ( SDL_PollEvent(&event) ) {
+            switch (event.type) {
+                case SDL_MOUSEMOTION:
+                    break;
+                case SDL_MOUSEBUTTONDOWN:
+                    break;
+                case SDL_KEYDOWN:
+                    break;
+                case SDL_QUIT:
+                    printf("Exiting\n");
+                    SDL_Quit();
+                    return 0;
+                case SDL_USEREVENT:
+                    if (eof == 1) break; 
                     timer1 = SDL_AddTimer(delay, event_push, NULL);
                     frame_render();
-					break;
+                    break;
                 case SDL_WINDOWEVENT:
                     if (event.window.event == SDL_WINDOWEVENT_RESIZED) {                        
                         // calculate old pixel array size, set new width and height, calculate new size
@@ -184,15 +184,15 @@ int main(int argc, char* argv[]) {
                         if (ypos >= pixel_height) ypos = 0;
                     }
                     break;
-				default:
-					break;
-			}
-		}
-	}
-	
-	/* Clean up the SDL library */
-	SDL_Quit();
-	return(0);
+                default:
+                    break;
+            }
+        }
+    }
+    
+    /* Clean up the SDL library */
+    SDL_Quit();
+    return(0);
 }
 
 // average of all
@@ -298,8 +298,8 @@ void frame_render() {
 
 static Uint32 event_push(Uint32 interval, void* param)
 {
-	SDL_Event event;
-	event.type = SDL_USEREVENT;
-	SDL_PushEvent(&event);
-	return 0;
+    SDL_Event event;
+    event.type = SDL_USEREVENT;
+    SDL_PushEvent(&event);
+    return 0;
 }
