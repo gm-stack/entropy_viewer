@@ -32,10 +32,10 @@ clang main.c -o main `pkg-config sdl2 --cflags --libs`
 
 ```
 Usage: cat <file> | ./main -w width -h height [-f fps] [-a] [-b size] [-x] [-s scale]
-			   -w : window width in pixels
-			   -h : window height in pixels
-			   -f : FPS (default 60)
-			   -a : draw in waterfall mode - draw a full line then shift down
+               -w : window width in pixels
+               -h : window height in pixels
+               -f : FPS (default 60)
+               -a : draw in waterfall mode - draw a full line then shift down
                     (default: draw \"CRT style\" - left to right, top to bottom,
                     then start again at top left)
                -b : buffer size per block in bytes (default 4096)
