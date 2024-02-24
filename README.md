@@ -1,8 +1,8 @@
 # entropy_viewer
 
-Displays entropy read from stdin for a block of data represented one pixel at a time, using SDL2. 
+Displays entropy read from stdin for a number of blocks of data, using SDL2. 
 
-By default, every 4096 bytes is one pixel.
+By default, every 4096 bytes is one pixel. The number of bytes and the scaling factor in pixels can be configured.
 
 Kind-of like [playfile](https://github.com/gm-stack/playfile) (which I wrote 14 years ago) - but looking at a block at a time, not one pixel at a time - effectively "zoomed out".
 
@@ -31,12 +31,16 @@ clang main.c -o main `pkg-config sdl2 --cflags --libs`
 ## Usage
 
 ```
-Usage: cat <file> | ./main -w width -h height [-f fps] [-a] [-b size]
--w : window width in pixels
--h : window height in pixels
--f : FPS (default 60)
--a : draw in waterfall mode
--b : buffer size per pixel (default 4096)
+Usage: cat <file> | ./main -w width -h height [-f fps] [-a] [-b size] [-x] [-s scale]
+			   -w : window width in pixels
+			   -h : window height in pixels
+			   -f : FPS (default 60)
+			   -a : draw in waterfall mode - draw a full line then shift down
+                    (default: draw \"CRT style\" - left to right, top to bottom,
+                    then start again at top left)
+               -b : buffer size per block in bytes (default 4096)
+               -x : exit when EOF reached
+               -s : scaling factor: each block is n pixels
 ```
 
 ```bash
@@ -49,4 +53,4 @@ tail -f somefile.img | ./main -w 640 -h 480 -a -b 16384
 
 ## Todo
 
-- Colour scheme could be configurable
+- Colour scheme could be more configurable
